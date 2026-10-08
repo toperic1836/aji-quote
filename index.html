@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<!-- 資產版本：更新檔案後把所有 ?v=20261008aji1 一起換新（sed -i 's/20261008aji1/新版本/g' index.html） -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#0a6d8f">
+<title>安康如意 AJI 保障試算｜富邦人壽 南方通訊處</title>
+<meta name="description" content="富邦人壽 安康如意終身保險（AJI）＋骨力勇 ADH 附約 保費與骨折給付情境試算。">
+<link rel="icon" type="image/png" href="img/favicon.png?v=20261008aji1">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=20261008aji1">
+<link rel="stylesheet" href="css/dm-base.css?v=20261008aji1">
+<link rel="stylesheet" href="css/accident.css?v=20261008aji1">
+</head>
+<body class="acc-body">
+<header class="acc-top">
+  <div class="acc-brand">
+    <img class="acc-logo" src="img/logo-wide.png?v=20261008aji1" alt="南方 NANFANG RISE" width="104" height="44">
+    <span class="acc-brand-text">
+      <span class="acc-slogan">富邦人壽 南方通訊處</span>
+      <span class="acc-title"><b>安康如意 AJI 保障試算報價系統</b></span>
+    </span>
+  </div>
+  <div class="acc-actions">
+    <button type="button" class="btn btn-gold" id="btnPng">🖼 下載保障彙整圖</button>
+    <button type="button" class="btn" id="btnCopyLink" title="把客戶頁網址（試算資料全在網址內）複製下來貼到 LINE">🔗 複製客戶頁連結</button>
+    <button type="button" class="btn" id="btnOpenClient">👁 開啟客戶頁</button>
+    <button type="button" class="btn btn-ghost" id="btnReset">↺ 恢復預設</button>
+    <a class="btn btn-ghost" id="lnkTravel" href="https://toperic1836.github.io/travel-quote/editor.html">✈ 旅平險報價</a>
+    <a class="btn btn-ghost" id="lnkAccident" href="https://toperic1836.github.io/accident-quote/">🦴 意外險報價</a>
+  </div>
+</header>
+
+<div class="acc-layout">
+  <!-- ================= 左側：輸入投保資料 ================= -->
+  <aside class="acc-input" id="inputPanel">
+    <section class="ed-card agent-card" id="agentCard">
+      <h2>👤 業務員資料 <small>填一次即可・與旅平險、意外險報價共用</small></h2>
+      <div class="agent-grid">
+        <label>姓名<input type="text" id="agentName" maxlength="20" placeholder="例：王小明" autocomplete="off"></label>
+        <label>職級／職稱<input type="text" id="agentTitle" maxlength="20" list="agentTitleList" placeholder="例：業務員、主任" autocomplete="off"></label>
+        <label class="agent-phone">電話（客戶可點擊撥號）<input type="tel" id="agentPhone" maxlength="24" placeholder="例：0912-345-678" autocomplete="off"></label>
+      </div>
+      <datalist id="agentTitleList"></datalist>
+      <div class="agent-foot"><span class="agent-unit">單位：富邦人壽 南方通訊處（固定，不可修改）・只存在本機瀏覽器</span><button type="button" class="btn btn-sm" id="agentSample">載入範例</button></div>
+      <p class="agent-status" id="agentStatus" role="status"></p>
+    </section>
+    <section class="ed-card">
+      <h2>投保資料 <small>右側即時更新</small></h2>
+      <div class="acc-basic">
+        <label>姓名<input type="text" id="name" autocomplete="off"></label>
+        <label>民國生日<input type="text" id="rocBirth" inputmode="numeric" placeholder="例：700101"></label>
+        <label>性別
+          <select id="gender">
+            <option value="female">女性</option>
+            <option value="male">男性</option>
+          </select>
+        </label>
+        <label>職業類別<select id="occupation"></select></label>
+        <label class="wide">繳別<select id="payMode"></select></label>
+      </div>
+      <p class="field-error" id="ageError" hidden></p>
+    </section>
+
+    <!-- AJI 主約 -->
+    <section class="ed-card prod-in" style="--tone:var(--gold)">
+      <div class="prod-head"><span class="prod-code">AJI</span><strong>安康如意終身保險（主約）</strong></div>
+      <div class="acc-inline">
+        <label>繳費年期<select id="ajiTerm"></select></label>
+        <label>保險金額
+          <span class="amount-control"><input type="number" id="ajiAmount" inputmode="numeric" min="30" max="500" step="10"><span>萬元</span></span>
+        </label>
+      </div>
+      <p class="rule-note" id="ajiNote">30～500 萬（以萬元為單位）｜6 年期 16～70 歲、20 年期 16～60 歲｜職業 1～4 類</p>
+      <p class="field-error" id="ajiError" hidden></p>
+    </section>
+
+    <!-- ADH 附約 -->
+    <section class="ed-card prod-in" style="--tone:#b8862b">
+      <div class="prod-head"><span class="prod-code">ADH</span><strong>骨力勇意外骨折傷害保險附約</strong></div>
+      <label>保額<span class="amount-control"><input type="number" id="adhAmount" inputmode="numeric" min="0" step="10"><span>萬元</span></span></label>
+      <p class="rule-note" id="adhNote"></p>
+      <p class="field-error" id="adhError" hidden></p>
+    </section>
+
+    <!-- 骨折情境 -->
+    <section class="ed-card scenario">
+      <h2>骨折情境 <small>預設：橈骨或尺骨・完全骨折</small></h2>
+      <label>骨折部位<select id="boneId"></select></label>
+      <div class="acc-inline">
+        <label>骨折程度<select id="fractureType"></select></label>
+        <label>實際住院日數
+          <span class="amount-control"><input type="number" id="hospitalDays" inputmode="numeric" min="0" max="90" step="1"><span>日</span></span>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="surgery"> 住院期間施行手術（AJI 住院手術醫療保險金 0.3%）</label>
+    </section>
+    <p class="build-ver">南方通訊處版 115/10/08・AJI 依官方費率表／投保規則／商品說明；ADH 同意外險工具（rates.js）</p>
+  </aside>
+
+  <!-- ================= 右側：保障彙整（客戶頁同內容） ================= -->
+  <main class="acc-summary" id="summaryPanel">
+    <div id="quoteCard" class="quote-wrap" aria-live="polite"></div>
+
+    <!-- ADH 骨折別表圖（DM 第 3 頁）：依「骨折部位」自動框出該部位；點圖上的骨折（左欄）或脫臼（右欄）部位可直接選取 -->
+    <figure class="chart-card">
+      <div class="chart-thumb" id="chartThumb">
+        <span class="chart-stage">
+          <img src="img/adh-fracture-chart.webp?v=20261008aji1" width="922" height="1296"
+               alt="骨力勇 ADH 意外傷害骨折及脫臼開放性復位術保險金給付比例圖">
+          <span class="chart-overlay" aria-hidden="true"></span>
+        </span>
+        <span class="chart-tap-hint">👆 點圖上骨折或脫臼部位，直接看理賠金額</span>
+      </div>
+      <figcaption>
+        <span class="chart-kicker">ADH 給付比例</span>
+        <strong>骨力勇 ADH 骨折及脫臼給付比例</strong>
+        <small>（取自 DM，詳見條款）</small>
+        <div class="chart-callout" id="chartCallout" aria-live="polite"></div>
+        <p>左側：意外傷害骨折保險金給付比例（保險金額 × 3%～80%）。</p>
+        <p>右側：意外傷害脫臼開放性復位術保險金給付比例（保險金額 × 10%～30%）。</p>
+        <p class="chart-hint">點圖上骨折部位（左欄）或脫臼部位（右欄）的標籤、比例格或端點，直接看理賠金額；變更「骨折部位」也會自動標示。</p>
+      </figcaption>
+    </figure>
+
+    <footer class="site-footer" id="sigFooter"></footer>
+  </main>
+</div>
+
+<script src="js/vendor/html2canvas.min.js?v=20261008aji1"></script>
+<script src="js/agent-profile.js?v=20261008aji1"></script>
+<script src="js/rates.js?v=20261008aji1"></script>
+<script src="js/app.js?v=20261008aji1"></script>
+</body>
+</html>

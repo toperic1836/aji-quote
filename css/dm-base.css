@@ -1,0 +1,302 @@
+/* 旅平險 三方案報價 — 115/10/06 美編：同原版 DM（青綠→深藍漸層、白色圓角卡、金色推薦框） */
+:root {
+  --navy: #0b4f7a;        /* DM 深藍（方案一、標題字） */
+  --navy-2: #0a6d8f;      /* DM 湖藍（方案二） */
+  --navy-3: #0a3d5e;      /* 頁尾漸層深端 */
+  --teal: #00a29a;        /* DM 青綠（方案三、強調、電話膠囊） */
+  --teal-d: #00837f;
+  --gold: #c9a24a;        /* DM 金（推薦框、頁尾金線、logo 金框） */
+  --gold-2: #e6c97a;
+  --gold-soft: #fff6e2;
+  --amber-bg: #fff1d6; --amber: #a86a00;
+  --blue-bg: #e3eef6;
+  --navy-soft: #e3eef6;
+  --tint: #f3f9fa;        /* 表格首欄、身故框 */
+  --tint-teal: #eefaf8;   /* 推薦欄底色 */
+  --ink: #1d3340;
+  --ink-2: #4b6573;
+  --muted: #6b8592;
+  --line: #e3edf0;
+  --dash: #cfe3e6;
+  --bg: #eef6f7;
+  --card: #ffffff;
+  --danger: #b3261e;
+  --radius: 22px;
+  --shadow: 0 10px 30px rgba(11,79,122,.13);
+  --font: "Noto Sans CJK TC", "Noto Sans TC", "PingFang TC", "Heiti TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font); font-size: 17px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.app { max-width: 1240px; margin: 0 auto; padding-bottom: env(safe-area-inset-bottom); background: var(--bg); }
+.loading, .noscript { padding: 48px 20px; text-align: center; color: var(--muted); }
+
+/* 範例標示 */
+.sample-banner {
+  position: sticky; top: 0; z-index: 20;
+  background: repeating-linear-gradient(45deg, #b3261e, #b3261e 12px, #c4362d 12px, #c4362d 24px);
+  color: #fff; text-align: center; font-weight: 700; letter-spacing: .08em;
+  padding: 8px 12px; font-size: 15px;
+}
+.card-sample {
+  position: absolute; top: 14px; right: -38px; transform: rotate(35deg);
+  background: var(--danger); color: #fff; font-weight: 800; font-size: 14px; letter-spacing: .3em;
+  padding: 4px 44px; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+
+/* ===== 頁首（DM hero：漸層＋右上圓形光暈＋標籤膠囊＋大標＋行程膠囊） ===== */
+.hero {
+  background: linear-gradient(135deg, var(--teal-d) 0%, var(--navy-2) 60%, var(--navy) 100%);
+  color: #fff; padding: 22px 20px 26px; position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ""; position: absolute; right: -90px; top: -90px; width: 260px; height: 260px;
+  border-radius: 50%; background: rgba(255,255,255,.07); pointer-events: none;
+}
+.hero > * { position: relative; z-index: 1; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.hero-tag {
+  display: inline-block; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+  border-radius: 40px; padding: 3px 14px; font-size: 13.5px; letter-spacing: .12em;
+}
+.hero-badge, .hero-schengen {
+  display: inline-block; padding: 3px 12px; border-radius: 40px; font-size: 12.5px; font-weight: 700;
+  background: #fff; color: var(--navy); letter-spacing: .04em;
+}
+.hero-badge.gold, .hero-region { background: var(--gold); color: #fff; }
+.hero-title {
+  margin: 10px 0 2px; font-size: 34px; line-height: 1.2; font-weight: 700; letter-spacing: .06em;
+  display: flex; flex-wrap: wrap; gap: 0 4px; align-items: baseline;
+}
+.hero-title .ttl { white-space: nowrap; }
+.hero-sub { font-size: 16px; opacity: .95; }
+.hero-sub b { font-weight: 700; letter-spacing: .04em; }
+.hero-trip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 15px; }
+.hero-trip span { background: rgba(255,255,255,.14); border-radius: 10px; padding: 5px 12px; }
+.hero-trip b { font-weight: 700; font-size: 1.12em; }
+
+/* 方案導覽（手機） */
+.plan-nav {
+  position: sticky; top: 0; z-index: 10; display: flex; gap: 8px; padding: 10px 14px;
+  background: rgba(238,246,247,.95); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--dash); overflow-x: auto;
+}
+.sample-banner ~ .plan-nav { top: 39px; }
+.plan-nav a {
+  flex: 1 0 auto; text-align: center; text-decoration: none; color: #fff; white-space: nowrap;
+  background: var(--navy); border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 15px;
+}
+.plan-nav a.pc2 { background: var(--navy-2); }
+.plan-nav a.pc3 { background: linear-gradient(135deg, var(--teal), var(--teal-d)); }
+.plan-nav a.nav-cmp { background: #fff; color: var(--navy); border: 1px solid var(--dash); flex-grow: 0; }
+.plan-nav a:active { filter: brightness(.9); }
+
+/* ===== 方案卡片（DM opt） ===== */
+.plans { display: grid; grid-template-columns: 1fr; gap: 18px; padding: 16px 14px 8px; }
+.plan-card {
+  position: relative; overflow: hidden; background: var(--card); border-radius: var(--radius);
+  border: 3px solid transparent; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; scroll-margin-top: 64px;
+  --pc: var(--navy); --pc-bg: var(--blue-bg);
+}
+.plan-card.pc2 { --pc: var(--navy-2); --pc-bg: var(--amber-bg); }
+.plan-card.pc3 { --pc: var(--teal-d); --pc-bg: #dff4f1; }
+.plan-card.is-reco { border-color: var(--gold); box-shadow: 0 10px 30px rgba(201,162,74,.28); }
+.plan-head { background: var(--pc); color: #fff; padding: 14px 18px 12px; }
+.plan-card.pc3 .plan-head { background: linear-gradient(135deg, var(--teal), var(--teal-d)); }
+.plan-title { display: flex; align-items: center; gap: 10px; }
+.plan-no { font-size: 15px; opacity: .88; letter-spacing: .14em; }
+.plan-nm { font-size: 25px; font-weight: 700; line-height: 1.25; letter-spacing: .03em; }
+.plan-title:only-child .plan-no { font-size: 24px; font-weight: 700; opacity: 1; }
+.reco-badge { margin-left: auto; background: var(--gold); color: #fff; font-size: 13px; font-weight: 700; padding: 2px 12px; border-radius: 999px; letter-spacing: .08em; }
+.plan-tagline {
+  align-self: flex-start; margin: 14px 18px 0; padding: 3px 14px; border-radius: 30px;
+  font-size: 14px; font-weight: 700; background: var(--blue-bg); color: var(--navy);
+}
+.plan-card.pc2 .plan-tagline { background: var(--amber-bg); color: var(--amber); }
+.plan-card.pc3 .plan-tagline { background: #dff4f1; color: var(--teal-d); }
+.plan-card.is-reco .plan-tagline { background: var(--gold); color: #fff; }
+
+/* 大字保費（DM price） */
+.price-box { margin: 8px 18px 2px; }
+.price { color: var(--pc); font-weight: 700; display: flex; align-items: baseline; gap: 6px; }
+.price .c { font-size: 16px; }
+.price .n { font-size: 46px; line-height: 1.1; letter-spacing: -.5px; }
+.price.miss { font-size: 20px; color: var(--amber); padding: 6px 0; }
+.price-sub { font-size: 13.5px; color: var(--muted); }
+
+/* 身故框 */
+.death-box { margin: 12px 16px 4px; padding: 12px 14px; border-radius: 14px; background: var(--tint); border: 1px solid var(--line); text-align: center; }
+.death-label { color: var(--teal-d); font-size: 14px; font-weight: 700; letter-spacing: .08em; }
+.death-val { font-size: 34px; font-weight: 700; color: var(--navy); line-height: 1.2; }
+.death-br { color: var(--muted); font-size: 14px; }
+.death-box.child .death-val { font-size: 28px; }
+
+.transport-box { margin-top: 10px; padding: 8px 10px; border-radius: 10px; background: #fff; border: 1px dashed var(--dash); }
+.tr-label { font-size: 13px; color: var(--teal-d); font-weight: 700; line-height: 1.4; }
+.tr-val { font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1.25; }
+.tr-br { font-size: 12.5px; color: var(--muted); }
+
+/* 區塊標題（DM sec-title：青綠圓角直條） */
+.sec-title {
+  margin: 0 0 6px; font-size: 16px; font-weight: 700; color: var(--navy); letter-spacing: .08em;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-title::before { content: ""; flex: none; width: 5px; height: 17px; border-radius: 3px; background: var(--teal); }
+.sec-title.big { font-size: 21px; gap: 10px; }
+.sec-title.big::before { width: 7px; height: 22px; border-radius: 4px; }
+.sec-title small { margin-left: auto; font-size: 13px; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+
+.cov, .inconv, .others, .life-extra { padding: 14px 18px 6px; }
+.inconv, .others, .life-extra { border-top: 1px dashed var(--dash); margin-top: 6px; }
+
+.cov-row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; column-gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.cov-row:last-of-type { border-bottom: 0; }
+.cov-label { font-size: 15.5px; color: var(--ink-2); font-weight: 500; }
+.cov-sub { display: block; font-size: 12.5px; color: var(--muted); font-weight: 400; }
+.cov-val { text-align: right; white-space: nowrap; }
+.cov-val strong { font-size: 21px; color: var(--ink); line-height: 1.25; }
+.cov-br { grid-column: 1 / -1; text-align: right; font-size: 13.5px; color: var(--muted); }
+.oaa-chip { margin: 8px 0 4px; padding: 8px 12px; border-radius: 12px; background: var(--blue-bg); color: var(--navy); font-size: 14px; font-weight: 600; }
+.region-chip { margin: 8px 0 4px; padding: 8px 12px; border-radius: 12px; background: var(--amber-bg); color: #8a5600; font-size: 14px; font-weight: 600; }
+
+.items { list-style: none; margin: 0; padding: 0; }
+.items li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+.items li:last-child { border-bottom: 0; }
+.it-name { font-size: 15.5px; color: var(--ink-2); flex: 0 1 46%; }
+.it-amt { font-size: 15.5px; font-weight: 700; color: var(--ink); text-align: right; flex: 1 1 54%; }
+.it-amt .nw { white-space: nowrap; }
+.empty { color: #9aaab2; font-size: 15px; margin: 4px 0; }
+
+.extra-list { list-style: none; margin: 0; padding: 0; }
+.extra-list li { padding: 7px 0; border-bottom: 1px dashed var(--line); display: flex; flex-direction: column; gap: 1px; }
+.extra-list li:last-child { border-bottom: 0; }
+.extra-list b { font-size: 15px; color: var(--ink-2); font-weight: 600; }
+.extra-list span { font-size: 14.5px; color: var(--navy); font-weight: 700; }
+
+/* 卡片底部保費算式 */
+.premium { margin-top: auto; padding: 12px 18px 16px; background: var(--tint); border-top: 1px dashed var(--dash); text-align: center; }
+.plan-card.is-reco .premium { background: var(--tint-teal); }
+.prem-label { font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: .3em; }
+.prem-formula { font-size: 16px; color: var(--ink-2); }
+.prem-formula b { font-size: 18px; color: var(--ink); }
+.prem-total { font-size: 30px; font-weight: 700; color: var(--pc, var(--navy)); letter-spacing: .01em; }
+
+/* ===== 主要保障比較（DM 表格） ===== */
+.cmp-card { margin: 16px 14px 0; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 14px 14px; scroll-margin-top: 64px; }
+.cmp-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
+table.cmp { width: 100%; min-width: 340px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+.cmp th { font-size: 14px; color: #fff; padding: 9px 4px; font-weight: 700; line-height: 1.3; background: var(--navy); }
+.cmp th.k { width: 28%; border-top-left-radius: 12px; }
+.cmp th.pc2 { background: var(--navy-2); }
+.cmp th.pc3 { background: var(--teal); }
+.cmp th:last-child { border-top-right-radius: 12px; }
+.cmp th small { display: block; font-size: 11.5px; font-weight: 400; opacity: .9; }
+.cmp td { text-align: center; padding: 9px 4px; font-size: 15px; font-weight: 700; color: var(--navy); border-bottom: 1px solid var(--line); line-height: 1.3; word-break: break-word; }
+.cmp td.k { text-align: left; padding-left: 10px; font-size: 14px; color: var(--ink); background: var(--tint); }
+.cmp td.reco { background: var(--tint-teal); color: var(--teal-d); }
+.cmp td small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
+.cmp td.na { color: #b8c6cc; font-weight: 400; }
+.cmp td.yes { color: var(--teal-d); }
+.cmp td.miss { font-size: 12.5px; color: var(--amber); }
+.cmp td.txt { font-size: 12.5px; }
+.cmp tr.prem td:not(.k) { font-size: 16.5px; }
+.cmp-more { margin: 8px 0 0; font-size: 12.5px; color: var(--muted); text-align: right; }
+
+/* 注意事項 */
+.notes-wrap { margin: 16px 14px 0; background: #fff; border-radius: 18px; padding: 16px 16px 10px; box-shadow: 0 6px 18px rgba(11,79,122,.08); }
+.notes { margin: 8px 0 0; padding-left: 1.2em; color: var(--ink-2); font-size: 13.5px; line-height: 1.65; }
+.notes li { margin: 3px 0; }
+.notes li::marker { color: var(--teal); }
+
+/* ===== 頁尾簽名（DM foot：深藍漸層＋金線＋金框圓 logo＋青綠電話膠囊） ===== */
+.site-footer {
+  margin: 22px 0 0; padding: 20px 18px 18px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-3)); color: #fff; border-top: 5px solid var(--gold);
+}
+.sig-wrap { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 16px; }
+.sig-logo {
+  width: 76px; height: 76px; border-radius: 50%; object-fit: cover; flex: none;
+  border: 3px solid var(--gold); box-shadow: 0 0 0 4px rgba(201,162,74,.25);
+}
+.sig-text { min-width: 0; flex: 1 1 160px; }
+.sig-kicker { font-size: 13px; color: var(--gold-2); letter-spacing: .2em; }
+.sig-name { font-size: 24px; font-weight: 700; letter-spacing: .08em; line-height: 1.3; }
+.sig-unit { font-size: 13px; color: #c9dbe6; letter-spacing: .06em; }
+.sig-phone {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1 1 100%;
+  padding: 8px 22px; border-radius: 40px; background: var(--teal); color: #fff;
+  font-weight: 700; font-size: 22px; text-decoration: none; letter-spacing: .04em;
+}
+.sig-disc { margin-top: 12px; font-size: 12px; opacity: .75; }
+
+.error-box { margin: 40px 16px; padding: 24px; background: #fff; border-radius: var(--radius); border: 1px solid #f1c9c6; text-align: center; }
+.error-box h2 { color: var(--danger); margin-top: 0; }
+
+/* 舊版類別（保留相容） */
+.brand-bar { display: none; }
+
+/* ===== 平板／桌機：三欄並排，卡片疊在頁首漸層上（同 DM） ===== */
+@media (min-width: 760px) {
+  .hero { padding: 34px 40px 104px; border-radius: 0 0 28px 28px; }
+  .hero::after { right: -120px; top: -120px; width: 420px; height: 420px; }
+  .hero-tag { font-size: 15px; padding: 5px 20px; }
+  .hero-badge, .hero-schengen { font-size: 14px; padding: 4px 14px; }
+  .hero-title { font-size: 50px; margin-top: 12px; }
+  .hero-sub { font-size: 20px; }
+  .hero-trip { font-size: 18px; gap: 12px; margin-top: 18px; }
+  .hero-trip span { padding: 8px 16px; border-radius: 12px; }
+  .plan-nav { display: none; }
+  .plans { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; padding: 0 28px 8px; margin-top: -76px; position: relative; z-index: 2; }
+  .cmp-card { margin: 20px 28px 0; padding: 24px 26px 20px; }
+  .cmp th { font-size: 16px; padding: 12px 6px; }
+  .cmp th small { font-size: 13px; }
+  .cmp td { font-size: 18px; padding: 11px 6px; }
+  .cmp td.k { font-size: 16px; padding-left: 14px; }
+  .cmp td small { font-size: 12.5px; }
+  .cmp td.txt, .cmp td.miss { font-size: 14px; }
+  .cmp tr.prem td:not(.k) { font-size: 20px; }
+  .cmp th.k { width: 22%; }
+  .notes-wrap { margin: 20px 28px 0; padding: 18px 24px 12px; }
+  .site-footer { margin-top: 26px; padding: 24px 40px 20px; border-radius: 28px 28px 0 0; }
+  .sig-wrap { flex-wrap: nowrap; gap: 22px; }
+  .sig-logo { width: 104px; height: 104px; }
+  .sig-name { font-size: 32px; }
+  .sig-kicker { font-size: 15px; }
+  .sig-unit { font-size: 14px; }
+  .sig-phone { flex: none; margin-left: auto; font-size: 30px; padding: 8px 28px; }
+}
+@media (min-width: 1100px) {
+  .plans { grid-template-columns: repeat(3, 1fr); }
+  .it-name, .it-amt { font-size: 15px; }
+  .cov-label { font-size: 15px; }
+}
+@media print {
+  body { background: #fff; }
+  .plan-nav, .sample-banner { position: static; }
+  .plan-card { break-inside: avoid; box-shadow: none; }
+}
+
+/* 手機微調 */
+.hero-sub .nw { white-space: nowrap; }
+@media (max-width: 759px) {
+  .plan-nav .nav-nm { display: none; }
+  .plan-nav a { padding: 6px 10px; }
+  .hero-trip { font-size: 14px; gap: 6px; }
+  .hero-trip span { padding: 4px 10px; }
+  .cmp td { padding: 8px 2px; }
+  .cmp tr.prem td:not(.k) { font-size: 14.5px; white-space: nowrap; }
+}
+.pv-frame:not(.full) .plan-nav .nav-nm { display: none; }
+.pv-frame:not(.full) .plan-nav a { padding: 6px 10px; }
+.cmp tr.prem td.miss { font-size: 12.5px; white-space: normal; }
+@media (min-width: 760px) { .cmp tr.prem td.miss { font-size: 14px; } }
+
+/* fr3：三方案同類型 → 手機導覽列顯示保額檔次（桌機已含於名稱） */
+.plan-nav .nav-tier { display: none; font-size: 13px; font-weight: 700; }
+@media (max-width: 759px) { .plan-nav .nav-tier { display: inline; } }
+.pv-frame:not(.full) .plan-nav .nav-tier { display: inline; }
