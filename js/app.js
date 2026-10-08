@@ -98,7 +98,8 @@
     var ben = ajiOk ? R.AJI_BEN[term][s.gender][age] : null;
 
     // ---- ADH 搭配上限：min(200 萬, AJI 保額 × 1) ----
-    var maxAdh = Math.min(RULES.adh.max, Math.floor(Math.max(0, amt) * A.riderMultiple));
+    // ADH 上限 = min(200 萬, 主約保額 × 5)，主約保額以 AJI 投保金額 1 倍計（ADH／AJI 投保規則）
+    var maxAdh = Math.min(RULES.adh.max, Math.floor(Math.max(0, amt) * A.riderMultiple * RULES.adh.mainMultiple));
     var effectiveAdh = Math.max(0, Math.min(s.adhAmount, maxAdh));
 
     // ---- 保費 ----
@@ -169,8 +170,10 @@
       year1Die: year1Die, survival: survival, amtYuan: amtYuan, adhYuan: adhYuan,
       accidentDeath1: year1Die === null ? null : year1Die + amtYuan + adhYuan,
       accidentDeath21: amtYuan + adhYuan,
-      landDeath1: year1Die === null ? null : year1Die + amtYuan * A.landMultiple,
-      airDeath1: year1Die === null ? null : year1Die + amtYuan * A.airMultiple,
+      // ADH：搭乘陸上／水上大眾運輸 × 2；ADH 的「大眾運輸」不含空中，空中事故屬 ADH 一般意外 × 1
+      landDeath1: year1Die === null ? null : year1Die + amtYuan * A.landMultiple + adhYuan * RULES.adh.landWaterMultiple,
+      airDeath1: year1Die === null ? null : year1Die + amtYuan * A.airMultiple + adhYuan,
+      adhSuture: Math.round(adhYuan * RULES.adh.sutureRate),
       burnTotal: Math.round(amtYuan * A.burnRate + adhYuan * RULES.burn.adh),
       disabilityTotal: Math.max(0, amt) + effectiveAdh, // 萬元（一般意外 100%）
       years: years,
@@ -282,17 +285,20 @@
       ok ? "AJI 保額 " + amt + " 萬＋第1年度當年度保險金額 " + money.format(c.year1Die) + " 元（與保價金取大）" + (adhE > 0 ? "＋ADH " + adhE + " 萬" : "") +
         "；逐年增加至第20年度，第21年度起 AJI 為保額 " + amt + " 萬" + (adhE > 0 ? "（合計 " + wanY(c.accidentDeath21) + "）" : "") : "AJI 投保條件待確認");
     h += brow("2", "搭乘大眾運輸意外身故（第1保單年度）", ok ? "陸／水 " + wanY(c.landDeath1) + "｜空中 " + wanY(c.airDeath1) : "待確認",
-      "AJI 保額 3 倍（陸上、水上）／4 倍（空中）＋當年度保險金額；第21年度起為保額 3／4 倍；不含 ADH");
+      "AJI 保額 3 倍（陸上、水上）／4 倍（空中）＋當年度保險金額；第21年度起為保額 3／4 倍" +
+        (adhE > 0 ? "；ADH 陸／水 2 倍 " + adhE * 2 + " 萬、空中屬 ADH 一般意外 " + adhE + " 萬" : ""));
     h += brow("3", "意外失能", wan.format(c.disabilityTotal * RULES.disabilityMinRatio) + "～" + wan.format(c.disabilityTotal) + " 萬",
-      (adhE > 0 ? "AJI＋ADH" : "AJI") + " 一般意外依失能等級 5%～100%；AJI 搭乘陸／水大眾運輸 3 倍、空中 4 倍；第1～20年度一級失能另加計當年度保險金額與保價金取大");
+      (adhE > 0 ? "AJI＋ADH" : "AJI") + " 一般意外依失能等級 5%～100%；AJI 搭乘陸／水大眾運輸 3 倍、空中 4 倍" + (adhE > 0 ? "，ADH 陸／水 2 倍" : "") + "；第1～20年度一級失能另加計當年度保險金額與保價金取大");
     h += brow("4", "重大燒燙傷", yuan(c.burnTotal), "AJI 保額 25%" + (adhE > 0 ? "＋ADH 25%" : "") + "，契約有效期間以一次為限");
     h += brow("5", "意外住院醫療", "每日 " + yuan(c.ajiDaily), "AJI 保額 0.1% × 實際住院日數，同一事故最高 90 日；骨折未住院按骨折別日數 × 保額 0.05%");
     h += brow("6", "意外住院手術", "每次 " + yuan(c.ajiSurgeryEach), "AJI 保額 0.3%，每次事故一次；住院醫療＋手術合計最高 AJI 保額（保險年齡 85 歲前之事故）");
     h += brow("7", c.bone.label + "｜" + c.fracture.label, adhE === 0 ? "不投保" : yuan(c.adhFracture + c.adhCare),
       adhE === 0 ? "此方案未納入 ADH" : "ADH 骨折金 " + money.format(c.adhFracture) + "＋2%關懷金 " + money.format(c.adhCare), adhE > 0 ? "accent" : "");
-    h += brow("8", "非意外身故／完全失能（第1保單年度）", ok ? yuan(c.year1Die) : "待確認",
+    h += brow("8", "意外創傷縫合處置", adhE === 0 ? "不投保" : "≦7cm " + yuan(Math.round(c.adhSuture * RULES.adh.sutureRatios[0])) + "｜>7cm " + yuan(Math.round(c.adhSuture * RULES.adh.sutureRatios[1])),
+      adhE === 0 ? "此方案未納入 ADH" : "ADH 保額 0.1% × 50%（表淺撕裂傷 ≦7 公分）／100%（>7 公分），同一事故一次");
+    h += brow("9", "非意外身故／完全失能（第1保單年度）", ok ? yuan(c.year1Die) : "待確認",
       "第1～20年度：當年度保險金額與保單價值準備金取大；第21年度起無此給付");
-    h += brow("9", "生存保險金（第20保單年度屆滿）", ok ? yuan(c.survival) : "待確認",
+    h += brow("10", "生存保險金（第20保單年度屆滿）", ok ? yuan(c.survival) : "待確認",
       "當年度保險金額＝年繳標準保費 × 1.01 × 實際繳費年度數，契約繼續有效");
     h += "</tbody></table></div></section>";
 
@@ -324,7 +330,7 @@
     var notes = [
       "AJI 保費＝保險金額（萬）× 年繳費率（" + (c.ajiRate ? c.ajiRate + " 元／萬，" : "") + "男女相同）× 繳別係數（半年 0.5、季 0.25、月 0.08333333）；ADH 保費依職業類別與年齡費率 × 繳別係數（0.52／0.262／0.088），各自四捨五入。",
       "保費折扣（本試算未扣除）：金融機構轉帳、富邦信用卡、自行繳費享總保費 1%；首期匯款 1%；20 年期員工轉帳件主約 3%；主約折扣上限 3%。",
-      "AJI 投保規則：6 年期 16～70 歲、20 年期 16～60 歲；保額 30～500 萬（以萬元為單位）；職業 1～4 類；同一被保險人傷害險累計最高 2,000 萬。附約額度以 AJI 保額 1 倍計算（ADH 上限 " + c.maxAdh + " 萬）。",
+      "AJI 投保規則：6 年期 16～70 歲、20 年期 16～60 歲；保額 30～500 萬（以萬元為單位）；職業 1～4 類；同一被保險人傷害險累計最高 2,000 萬。ADH 最低 10 萬、最高 200 萬且不得大於主約保額 5 倍（AJI 以投保金額 1 倍計算附約額度；本件 ADH 上限 " + c.maxAdh + " 萬）；ADH 為一年期附約，續保至保險年齡 75 歲，續保時依當時費率、年齡、職業重新計算保費。",
       "意外傷害住院醫療、住院手術醫療保險金限保險年齡屆滿 85 歲前之意外事故，合計最高以 AJI 保險金額為限。"
     ];
     if (blockedMsg) notes.push(blockedMsg);
@@ -366,8 +372,9 @@
 
     showText($("ageError"), raw.age < 0 ? raw.ageError : "");
     showText($("ajiError"), raw.age >= 0 ? (raw.ajiError || raw.ageError) : "");
-    $("adhNote").textContent = "0＝不投保｜上限 " + raw.maxAdh + " 萬元（200 萬且不超過 AJI 保額 1 倍）";
-    showText($("adhError"), s.adhAmount !== raw.effectiveAdh ? "已依搭配規則改以 " + raw.effectiveAdh + " 萬元試算" : "");
+    $("adhNote").textContent = "0＝不投保｜10～" + raw.maxAdh + " 萬元（最高 200 萬且 ≦ AJI 保額 × 5）";
+    showText($("adhError"), s.adhAmount !== raw.effectiveAdh ? "已依搭配規則改以 " + raw.effectiveAdh + " 萬元試算"
+      : s.adhAmount > 0 && s.adhAmount < RULES.adh.min ? "ADH 最低保額 " + RULES.adh.min + " 萬元（離開欄位時自動補足）" : "");
 
     $("quoteCard").innerHTML = quoteHtml(c, v.s);
     renderChart(c);
@@ -715,6 +722,7 @@
       state.adhAmount = Math.min(state.adhAmount, compute(state).maxAdh);
     });
     on("adhAmount", "input", function (t) { state.adhAmount = clampNum(t.value, 0, compute(state).maxAdh); });
+    on("adhAmount", "blur", function () { if (state.adhAmount > 0 && state.adhAmount < RULES.adh.min) state.adhAmount = Math.min(RULES.adh.min, compute(state).maxAdh); }); // ADH 最低 10 萬
     on("boneId", "change", function (t) { state.boneId = t.value; chartView.mode = "bone"; });
     on("fractureType", "change", function (t) { state.fractureType = t.value; chartView.mode = "bone"; });
     on("hospitalDays", "input", function (t) { state.hospitalDaysInput = t.value; });
